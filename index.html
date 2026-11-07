@@ -5,30 +5,51 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Project Roadmap</title>
 <style>
-:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f6f6f8;--bd:#ddd;--ac:#4f46e5;--b:#16a34a;--i:#d97706;--a:#dc2626}
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f6f6f8;--bd:#ddd;--ac:#4f46e5;--b:#16a34a;--i:#d97706;--a:#dc2626;--star:#f59e0b}
 @media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--mut:#999;--card:#1c1c21;--bd:#333;--ac:#818cf8}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
-main{max-width:1100px;margin:0 auto;padding:24px 16px}
-h1{margin:0 0 4px}
-.sub{color:var(--mut);margin:0 0 16px}
-.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+header{padding:16px 16px 8px;max-width:1500px;margin:0 auto}
+h1{margin:0 0 2px;font-size:24px}
+.sub{color:var(--mut);margin:0;font-size:14px}
+.prog{height:6px;background:var(--card);border-radius:4px;overflow:hidden;margin-top:8px}
+.prog div{height:100%;background:var(--ac);width:0;transition:width .3s}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;max-width:1500px;margin:0 auto;padding:8px 16px 24px;align-items:start}
+aside{position:sticky;top:0;max-height:100vh;overflow:auto;padding:8px 12px 8px 0;border-right:1px solid var(--bd)}
+aside select{width:100%;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;margin-bottom:8px}
+.sec{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:12px 4px 4px}
+.topic{display:flex;align-items:center;gap:2px;border-radius:8px}
+.topic:hover{background:var(--card)}
+.topic.sel{background:var(--ac);color:#fff}
+.topic .nm{flex:1;text-align:left;border:0;background:none;color:inherit;font:inherit;font-size:14px;padding:5px 6px;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topic .ct{font-size:12px;color:var(--mut);white-space:nowrap}
+.topic.sel .ct{color:#fffc}
+.ib{border:0;background:none;cursor:pointer;color:inherit;font-size:15px;padding:2px 4px;border-radius:6px;opacity:.7}
+.ib:hover{opacity:1}
+.topic .del{visibility:hidden}
+.topic:hover .del,.topic.sel .del{visibility:visible}
+.ib.on{color:var(--star);opacity:1}
+.topic.sel .ib.on{color:#fde68a}
+.nostar{width:23px}
+main{min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
 input[type=search]{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 button.chip{border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:4px 12px;border-radius:99px;cursor:pointer;font:inherit;font-size:14px}
 button.chip[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
-.prog{height:8px;background:var(--card);border-radius:4px;overflow:hidden;margin:12px 0}
-.prog div{height:100%;background:var(--ac);width:0;transition:width .3s}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px}
+h2.cur{margin:8px 0 10px;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{position:relative;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
 .card.done{opacity:.55}
-.tags{display:flex;gap:6px;font-size:12px}
+.card:hover,.card:focus-visible{border-color:var(--ac);outline:none}
+.card .ps{position:absolute;top:8px;right:8px;font-size:18px}
+.card .pd{position:absolute;top:10px;right:36px;font-size:14px}
+.tags{display:flex;gap:6px;font-size:12px;flex-wrap:wrap;padding-right:56px}
 .tag{padding:1px 8px;border-radius:99px;border:1px solid var(--bd)}
 .lv-b{color:var(--b)}.lv-i{color:var(--i)}.lv-a{color:var(--a)}
 .card h3{margin:0;font-size:17px}
 .card p{margin:0;color:var(--mut);font-size:14px;flex:1}
-.card{cursor:pointer}
-.chip.danger{border-color:var(--a);color:var(--a)}
-.card:hover,.card:focus-visible{border-color:var(--ac);outline:none}
+.ft{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+label{cursor:pointer}
 dialog{max-width:680px;width:calc(100% - 32px);border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);padding:20px}
 dialog::backdrop{background:#0008}
 dialog h2{margin:8px 0}
@@ -38,22 +59,20 @@ dialog li{margin:4px 0}
 dialog pre{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:10px;overflow:auto;margin:4px 0;font-size:13px}
 dialog .note{color:var(--mut);font-size:14px}
 dialog .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
-.ft{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
-label{cursor:pointer}</style>
+@media(max-width:800px){.layout{grid-template-columns:1fr}aside{position:static;max-height:45vh;border-right:0;border-bottom:1px solid var(--bd);padding-right:0}}
+</style>
 </head>
 <body>
+<header><h1>Project Roadmap</h1><p class="sub" id="count"></p><div class="prog" title="Completed"><div id="pb"></div></div></header>
+<div class="layout">
+<aside aria-label="Topics"><select id="role" aria-label="Role"></select><div id="topics"></div></aside>
 <main>
-<h1>Project Roadmap</h1>
-<p class="sub">Pick a project, build it, tick it off. Progress is saved in your browser.</p>
 <div class="bar"><input type="search" id="q" placeholder="Search projects…" aria-label="Search projects"></div>
-<div class="bar" id="role" role="group" aria-label="Role"></div>
-<div class="bar" id="lv"role="group" aria-label="Level"></div>
-<div class="bar" id="cat" role="group" aria-label="Category"></div>
-<div class="bar" id="delbar"></div>
-<div class="prog" title="Completed"><div id="pb"></div></div>
-<p class="sub" id="count"></p>
+<div class="bar" id="lv" role="group" aria-label="Level"></div>
+<h2 class="cur" id="cur"></h2>
 <div class="grid" id="grid"></div>
 </main>
+</div>
 <dialog id="dlg" aria-labelledby="dt"></dialog>
 <script>
 const LV={b:'Beginner',i:'Intermediate',a:'Advanced'};
@@ -76,51 +95,82 @@ Security:'Cyber Security|DevSecOps|API Security|AI Red Teaming|Security|Networki
 const EXTRA={DevOps:new Set(['Server Performance Stats','Log Archive Tool','Nginx Log Analyser','Database Backup Utility','Env Checker'])};
 const inRole=p=>!role||ROLES[role].has(p.cat)||(EXTRA[role]?.has(p.title)??false);
 for(const r in ROLES)ROLES[r]=new Set(ROLES[r].split('|'));
+
 let P=[];
 const $=id=>document.getElementById(id);
-let done=new Set(),hidden=new Set(),starred=new Set(),onlyStar=false,lv='',cat='',role='';
-try{done=new Set(JSON.parse(localStorage.done||'[]'))}catch{}
-try{hidden=new Set(JSON.parse(localStorage.hidden||'[]'))}catch{}
-try{starred=new Set(JSON.parse(localStorage.starred||'[]'))}catch{}
-const save=()=>{try{localStorage.done=JSON.stringify([...done]);localStorage.hidden=JSON.stringify([...hidden]);localStorage.starred=JSON.stringify([...starred])}catch{}};
+const ALL='',STARS='*';
+let lv='',cat=ALL,role='',onlyPStar=false;
+const ld=k=>{try{return new Set(JSON.parse(localStorage[k]||'[]'))}catch{return new Set()}};
+const done=ld('done'),hidden=ld('hidden'),hiddenP=ld('hiddenP'),starred=ld('starred'),pstar=ld('pstar');
+const save=()=>{try{for(const [k,v] of Object.entries({done,hidden,hiddenP,starred,pstar}))localStorage[k]=JSON.stringify([...v])}catch{}};
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-function chips(el,items,get,set,star){
-  el.innerHTML=['',...items].map(v=>`<button class="chip" aria-pressed="${get()===v}" data-v="${esc(v)}">${star&&starred.has(v)?'★ ':''}${esc(LV[v]||v||'All')}</button>`).join('');
-  el.onclick=e=>{const b=e.target.closest('button');if(b){set(b.dataset.v);render()}};
+// one sidebar row; plain rows (All topics / Starred topics) have no star or delete button
+function row(name,label,n,d,plain){
+  const on=starred.has(name);
+  return `<div class="topic${cat===name?' sel':''}" data-t="${esc(name)}">`+
+    (plain?'<span class="nostar"></span>':`<button class="ib${on?' on':''}" data-act="star" aria-pressed="${on}" aria-label="${on?'Unstar':'Star'} ${esc(label)}">${on?'★':'☆'}</button>`)+
+    `<button class="nm" data-act="sel" title="${esc(label)}">${esc(label)}</button><span class="ct">${d}/${n}</span>`+
+    (plain?'':`<button class="ib del" data-act="del" aria-label="Delete ${esc(label)}">🗑</button>`)+`</div>`;
 }
 function render(){
-  const V=P.filter(p=>!hidden.has(p.cat)),vdone=V.filter(p=>done.has(p.id)).length;
-  chips($('role'),Object.keys(ROLES),()=>role,v=>{role=v;cat=''});
-  chips($('lv'),Object.keys(LV),()=>lv,v=>lv=v);
-  chips($('cat'),[...new Set(V.filter(inRole).map(p=>p.cat))].sort((a,b)=>starred.has(b)-starred.has(a)||a.localeCompare(b)),()=>cat,v=>cat=v,true);
-  const q=$('q').value.toLowerCase();
-  const list=V.filter(p=>(!onlyStar||starred.has(p.cat))&&inRole(p)&&(!lv||p.lv==lv)&&(!cat||p.cat==cat)&&(p.title+p.desc+p.cat).toLowerCase().includes(q));
-  $('count').textContent=`${list.length} projects · ${vdone}/${V.length} completed`;
+  const V=P.filter(p=>!hidden.has(p.cat)&&!hiddenP.has(p.id)),R=V.filter(inRole),vdone=V.filter(p=>done.has(p.id)).length;
+  $('count').textContent=`${V.length} projects · ${vdone} completed`;
   $('pb').style.width=(V.length?100*vdone/V.length:0)+'%';
-  $('delbar').innerHTML=(cat?`<button class="chip" id="star">${starred.has(cat)?'★ Unstar':'☆ Star'} topic “${esc(cat)}”</button>`:'')+(starred.size?`<button class="chip" id="onlystar" aria-pressed="${onlyStar}">★ Starred topics only (${starred.size})</button>`:'')+(cat?`<button class="chip danger" id="del">🗑 Delete topic “${esc(cat)}”</button>`:'')+(hidden.size?`<button class="chip" id="restore">Restore ${hidden.size} deleted topic${hidden.size>1?'s':''}</button>`:'');
+  $('role').innerHTML=['',...Object.keys(ROLES)].map(r=>`<option value="${esc(r)}"${r===role?' selected':''}>${r?esc(r):'All roles'}</option>`).join('');
+  const stat={};
+  for(const p of R){const t=stat[p.cat]??={n:0,d:0};t.n++;if(done.has(p.id))t.d++}
+  const names=Object.keys(stat).sort((a,b)=>a.localeCompare(b)),st=names.filter(n=>starred.has(n)),rest=names.filter(n=>!starred.has(n));
+  const tot=l=>l.reduce((a,n)=>({n:a.n+stat[n].n,d:a.d+stat[n].d}),{n:0,d:0});
+  if(cat!==ALL&&cat!==STARS&&!stat[cat])cat=ALL;
+  if(cat===STARS&&!st.length)cat=ALL;
+  const all=tot(names),sT=tot(st);
+  $('topics').innerHTML=row(ALL,'All topics',all.n,all.d,true)
+    +(st.length?row(STARS,'★ Starred topics',sT.n,sT.d,true)+'<div class="sec">Starred</div>'+st.map(n=>row(n,n,stat[n].n,stat[n].d)).join(''):'')
+    +`<div class="sec">Topics (${rest.length})</div>`+rest.map(n=>row(n,n,stat[n].n,stat[n].d)).join('')
+    +(hidden.size||hiddenP.size?`<div class="sec">Deleted</div>`:'')
+    +(hidden.size?`<button class="chip" id="restore">Restore ${hidden.size} deleted topic${hidden.size>1?'s':''}</button> `:'')
+    +(hiddenP.size?`<button class="chip" id="restoreP">Restore ${hiddenP.size} deleted project${hiddenP.size>1?'s':''}</button>`:'');
+  $('lv').innerHTML=['',...Object.keys(LV)].map(v=>`<button class="chip" data-lv="${v}" aria-pressed="${lv===v}">${LV[v]||'All levels'}</button>`).join('')
+    +`<button class="chip" id="ps" aria-pressed="${onlyPStar}">★ Starred projects (${pstar.size})</button>`;
+  const q=$('q').value.toLowerCase();
+  const list=R.filter(p=>(cat===ALL||(cat===STARS?starred.has(p.cat):p.cat===cat))&&(!lv||p.lv==lv)&&(!onlyPStar||pstar.has(p.id))&&(p.title+p.desc+p.cat).toLowerCase().includes(q));
+  $('cur').textContent=`${cat===ALL?'All topics':cat===STARS?'Starred topics':cat} · ${list.length} project${list.length==1?'':'s'}`;
   $('grid').innerHTML=list.map(p=>`<div class="card${done.has(p.id)?' done':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
+<button class="ib pd" data-pdel="${p.id}" aria-label="Delete ${esc(p.title)}" title="Delete project">🗑</button>
+<button class="ib ps${pstar.has(p.id)?' on':''}" data-pstar="${p.id}" aria-pressed="${pstar.has(p.id)}" aria-label="Star ${esc(p.title)}">${pstar.has(p.id)?'★':'☆'}</button>
 <div class="tags"><span class="tag lv-${p.lv}">${LV[p.lv]}</span><span class="tag">${starred.has(p.cat)?'★ ':''}${esc(p.cat)}</span></div>
 <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
 <div class="ft"><span>${p.n?p.n.toLocaleString()+' started':'New'}</span><label><input type="checkbox" data-id="${p.id}"${done.has(p.id)?' checked':''}> Done</label></div></div>`).join('');
 }
-$('grid').onchange=e=>{const id=+e.target.dataset.id;e.target.checked?done.add(id):done.delete(id);save();render()};
-// deleting a topic hides every project in that category (stored in this browser; restorable)
-$('delbar').onclick=e=>{
-  if(e.target.id=='star'){starred.has(cat)?starred.delete(cat):starred.add(cat);if(!starred.size)onlyStar=false;save();render();return}
-  if(e.target.id=='onlystar'){onlyStar=!onlyStar;render();return}
+$('role').onchange=e=>{role=e.target.value;cat=ALL;render()};
+$('lv').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.id=='ps')onlyPStar=!onlyPStar;else lv=b.dataset.lv;render()};
+// sidebar: select / star / delete a topic. Deleting hides its projects in this browser; delete and restore both ask twice.
+$('topics').onclick=e=>{
+  if(e.target.id=='restoreP'){
+    if(!confirm(`Restore ${hiddenP.size} deleted project(s)?`))return;
+    if(!confirm('Second confirmation: really restore them?'))return;
+    hiddenP.clear();save();render();return;
+  }
   if(e.target.id=='restore'){
     const names=[...hidden].sort().join(', ');
     if(!confirm(`Restore ${hidden.size} deleted topic(s): ${names}?`))return;
     if(!confirm(`Second confirmation: really restore ${names}?`))return;
     hidden.clear();save();render();return;
   }
-  if(e.target.id!='del')return;
-  const n=P.filter(p=>p.cat==cat).length;
-  if(!confirm(`Delete the topic "${cat}" and its ${n} projects?`))return;
-  if(!confirm(`Second confirmation: really delete "${cat}"? Your progress on its projects will no longer count. You can restore it later.`))return;
-  hidden.add(cat);starred.delete(cat);if(!starred.size)onlyStar=false;cat='';save();render();
+  const b=e.target.closest('[data-act]'),r=e.target.closest('.topic');if(!b||!r)return;
+  const t=r.dataset.t;
+  if(b.dataset.act=='sel'){cat=t;render()}
+  else if(b.dataset.act=='star'){starred.has(t)?starred.delete(t):starred.add(t);save();render()}
+  else if(b.dataset.act=='del'){
+    const n=P.filter(p=>p.cat==t).length;
+    if(!confirm(`Delete the topic "${t}" and its ${n} projects?`))return;
+    if(!confirm(`Second confirmation: really delete "${t}"? Your progress on its projects will no longer count. You can restore it later.`))return;
+    hidden.add(t);starred.delete(t);if(cat===t)cat=ALL;save();render();
+  }
 };
+$('grid').onchange=e=>{const id=+e.target.dataset.id;e.target.checked?done.add(id):done.delete(id);save();render()};
+
 const GENERIC={b:['Break the task into small steps and build the simplest version first','Handle bad or missing input without crashing','Write a short README explaining how to run it'],i:['Plan the data model or structure before coding','Cover the main features plus error cases','Add tests and a README with setup steps'],a:['Write a short design doc covering architecture and trade-offs','Implement the core features with tests','Add monitoring or documentation so someone else can run it']};
 function open_(id){
   const p=P[id],ex=p.stretch||[],list=p.tasks||p.req||GENERIC[p.lv];
@@ -137,7 +187,18 @@ ${(p.notes||[]).map(x=>`<p class="note">${esc(x)}</p>`).join('')}
   $('dlg').showModal();
 }
 $('dlg').onclick=e=>{if(e.target==$('dlg'))$('dlg').close()};
-const openCard=e=>{const c=e.target.closest('.card');if(c&&!e.target.closest('label'))open_(+c.dataset.id)};
+const openCard=e=>{
+  const pd=e.target.closest('[data-pdel]');
+  if(pd){
+    const id=+pd.dataset.pdel,t=P[id].title;
+    if(!confirm(`Delete the project "${t}"?`))return;
+    if(!confirm(`Second confirmation: really delete "${t}"? You can restore it later.`))return;
+    hiddenP.add(id);pstar.delete(id);save();render();return;
+  }
+  const ps=e.target.closest('[data-pstar]');
+  if(ps){const id=+ps.dataset.pstar;pstar.has(id)?pstar.delete(id):pstar.add(id);save();render();return}
+  const c=e.target.closest('.card');if(c&&!e.target.closest('label'))open_(+c.dataset.id);
+};
 $('grid').onclick=openCard;
 $('grid').onkeydown=e=>{if(e.key=='Enter'&&e.target.classList.contains('card'))openCard(e)};
 $('q').oninput=render;

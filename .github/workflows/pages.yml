@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one deploy at a time; a newer push replaces a queued one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # fail the deploy if the data is broken or projects.js (the file:// fallback) is stale
+      - name: Check project data
+        run: |
+          node -e '
+          const fs = require("fs");
+          const d = JSON.parse(fs.readFileSync("projects.json", "utf8"));
+          if (!Array.isArray(d) || !d.length) throw new Error("projects.json is empty");
+          d.forEach((p, i) => { if (p.id !== i || !p.title || !p.category) throw new Error("bad project at index " + i); });
+          const js = fs.readFileSync("projects.js", "utf8");
+          if (js !== "window.PROJECTS=" + JSON.stringify(d) + ";") throw new Error("projects.js is out of sync with projects.json");
+          console.log(d.length + " projects OK");
+          '
+
+      - name: Collect site files
+        run: |
+          mkdir _site
+          cp index.html projects.json projects.js _site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
