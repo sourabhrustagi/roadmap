@@ -6,7 +6,7 @@
 <title>Project Roadmap</title>
 <style>
 :root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f6f6f8;--bd:#ddd;--ac:#4f46e5;--b:#16a34a;--i:#d97706;--a:#dc2626;--star:#f59e0b}
-@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--mut:#999;--card:#1c1c21;--bd:#333;--ac:#818cf8}}
+@media(prefers-color-scheme:dark){.lv-e{color:#c084fc}:root{--bg:#111;--fg:#eee;--mut:#999;--card:#1c1c21;--bd:#333;--ac:#818cf8}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
 header{padding:16px 16px 8px;max-width:1500px;margin:0 auto}
@@ -45,7 +45,7 @@ h2.cur{margin:8px 0 10px;font-size:20px}
 .card .pd{position:absolute;top:10px;right:36px;font-size:14px}
 .tags{display:flex;gap:6px;font-size:12px;flex-wrap:wrap;padding-right:56px}
 .tag{padding:1px 8px;border-radius:99px;border:1px solid var(--bd)}
-.lv-b{color:var(--b)}.lv-i{color:var(--i)}.lv-a{color:var(--a)}
+.lv-b{color:var(--b)}.lv-i{color:var(--i)}.lv-a{color:var(--a)}.lv-e{color:#9333ea}
 .card h3{margin:0;font-size:17px}
 .card p{margin:0;color:var(--mut);font-size:14px;flex:1}
 .ft{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
@@ -75,7 +75,7 @@ dialog .row{display:flex;justify-content:space-between;align-items:center;margin
 </div>
 <dialog id="dlg" aria-labelledby="dt"></dialog>
 <script>
-const LV={b:'Beginner',i:'Intermediate',a:'Advanced'};
+const LV={b:'Beginner',i:'Intermediate',a:'Advanced',e:'Expert'};
 // role -> categories (a category may belong to several roles)
 const ROLES={
 Frontend:'Frontend|HTML|CSS|JavaScript|TypeScript|Accessibility|Frameworks|Web App|API Integration|React|Vue|Angular|Next.js|Design System',
@@ -90,7 +90,9 @@ Security:'Cyber Security|DevSecOps|API Security|AI Red Teaming|Security|Networki
 'CS Fundamentals':'Data Structures & Algorithms|System Design|Software Design|Computer Science|C|C++|Python|Java|Go|Rust',
 'Game & Web3':'Game Development|Blockchain',
 'Design & Product':'UX Design|Product Design|Design System|Accessibility|Product Management',
-'Management & Growth':'Engineering Management|Product Management|Developer Relations|Technical Writing|SEO|Code Review'};
+'Software Architect':'Software Architecture|Architect Certifications|System Design|Software Design|Cloud Computing|Kubernetes|Terraform|AWS|Computer Science',
+'Engineering Manager':'Engineering Management|Management Certifications|Product Management|Technical Writing|Code Review|DevOps',
+'Management & Growth':'Engineering Management|Management Certifications|Product Management|Developer Relations|Technical Writing|SEO|Code Review'};
 // individual projects pulled into a role regardless of category
 const EXTRA={DevOps:new Set(['Server Performance Stats','Log Archive Tool','Nginx Log Analyser','Database Backup Utility','Env Checker'])};
 const inRole=p=>!role||ROLES[role].has(p.cat)||(EXTRA[role]?.has(p.title)??false);
