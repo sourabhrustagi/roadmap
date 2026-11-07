@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Roadmap</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f6f6f8;--bd:#ddd;--ac:#4f46e5;--b:#16a34a;--i:#d97706;--a:#dc2626}
+@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--mut:#999;--card:#1c1c21;--bd:#333;--ac:#818cf8}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px}
+h1{margin:0 0 4px}
+.sub{color:var(--mut);margin:0 0 16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+input[type=search]{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+button.chip{border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:4px 12px;border-radius:99px;cursor:pointer;font:inherit;font-size:14px}
+button.chip[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
+.prog{height:8px;background:var(--card);border-radius:4px;overflow:hidden;margin:12px 0}
+.prog div{height:100%;background:var(--ac);width:0;transition:width .3s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.card.done{opacity:.55}
+.tags{display:flex;gap:6px;font-size:12px}
+.tag{padding:1px 8px;border-radius:99px;border:1px solid var(--bd)}
+.lv-b{color:var(--b)}.lv-i{color:var(--i)}.lv-a{color:var(--a)}
+.card h3{margin:0;font-size:17px}
+.card p{margin:0;color:var(--mut);font-size:14px;flex:1}
+.card{cursor:pointer}
+.chip.danger{border-color:var(--a);color:var(--a)}
+.card:hover,.card:focus-visible{border-color:var(--ac);outline:none}
+dialog{max-width:680px;width:calc(100% - 32px);border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);padding:20px}
+dialog::backdrop{background:#0008}
+dialog h2{margin:8px 0}
+dialog h4{margin:16px 0 4px}
+dialog ul{margin:0;padding-left:20px}
+dialog li{margin:4px 0}
+dialog pre{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:10px;overflow:auto;margin:4px 0;font-size:13px}
+dialog .note{color:var(--mut);font-size:14px}
+dialog .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+.ft{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+label{cursor:pointer}</style>
+</head>
+<body>
+<main>
+<h1>Project Roadmap</h1>
+<p class="sub">Pick a project, build it, tick it off. Progress is saved in your browser.</p>
+<div class="bar"><input type="search" id="q" placeholder="Search projects…" aria-label="Search projects"></div>
+<div class="bar" id="role" role="group" aria-label="Role"></div>
+<div class="bar" id="lv"role="group" aria-label="Level"></div>
+<div class="bar" id="cat" role="group" aria-label="Category"></div>
+<div class="bar" id="delbar"></div>
+<div class="prog" title="Completed"><div id="pb"></div></div>
+<p class="sub" id="count"></p>
+<div class="grid" id="grid"></div>
+</main>
+<dialog id="dlg" aria-labelledby="dt"></dialog>
+<script>
+const LV={b:'Beginner',i:'Intermediate',a:'Advanced'};
+// role -> categories (a category may belong to several roles)
+const ROLES={
+Frontend:'Frontend|HTML|CSS|JavaScript|TypeScript|Accessibility|Frameworks|Web App|API Integration|React|Vue|Angular|Next.js|Design System',
+Backend:'API|CLI|SQL|Web App|API Integration|Security|Testing|Python|Node.js|Go|Java|Rust|PHP|Ruby|Kotlin|Scala|ASP.NET Core|Django|Laravel|Spring Boot|Ruby on Rails|GraphQL|PostgreSQL|MongoDB|Redis|Elasticsearch|API Security|System Design',
+'Full Stack':'Frontend|HTML|CSS|JavaScript|TypeScript|Node.js|React|Next.js|Web App|API|SQL|PostgreSQL|MongoDB|Redis|Git & GitHub|Docker|CI / CD|WordPress',
+DevOps:'DevOps|CI / CD|SSH|Nginx|DNS|Monitoring|Systemd|Docker|Docker Compose|AWS|Linux|Ansible|Terraform|Backups|Networking|VPN|Security|Kubernetes|Cloudflare|Cloud Computing|Git & GitHub|Shell / Bash|DevSecOps',
+Mobile:'React Native|Flutter|iOS & Swift|Android|Kotlin',
+'Data & AI':'Data Analysis|Pandas|Data Viz|Time Series|SQL|Data Cleaning|EDA|Web Scraping|LLMs|Machine Learning|Python|R|Business Intelligence|Power BI|Data Engineering',
+'AI Engineer':'LLMs|Machine Learning|Prompt Engineering|RAG|AI Agents|Vector Databases|NLP|Computer Vision|Fine-Tuning|MLOps|AI Safety|AI Red Teaming|Inference Engineering|Claude Code|Codex|Vibe Coding|AI Product Builder|Forward Deployed Engineering',
+Security:'Cyber Security|DevSecOps|API Security|AI Red Teaming|Security|Networking',
+'QA & Testing':'Testing|QA|Accessibility|Code Review',
+'CS Fundamentals':'Data Structures & Algorithms|System Design|Software Design|Computer Science|C|C++|Python|Java|Go|Rust',
+'Game & Web3':'Game Development|Blockchain',
+'Design & Product':'UX Design|Product Design|Design System|Accessibility|Product Management',
+'Management & Growth':'Engineering Management|Product Management|Developer Relations|Technical Writing|SEO|Code Review'};
+// individual projects pulled into a role regardless of category
+const EXTRA={DevOps:new Set(['Server Performance Stats','Log Archive Tool','Nginx Log Analyser','Database Backup Utility','Env Checker'])};
+const inRole=p=>!role||ROLES[role].has(p.cat)||(EXTRA[role]?.has(p.title)??false);
+for(const r in ROLES)ROLES[r]=new Set(ROLES[r].split('|'));
+let P=[];
+const $=id=>document.getElementById(id);
+let done=new Set(),hidden=new Set(),starred=new Set(),onlyStar=false,lv='',cat='',role='';
+try{done=new Set(JSON.parse(localStorage.done||'[]'))}catch{}
+try{hidden=new Set(JSON.parse(localStorage.hidden||'[]'))}catch{}
+try{starred=new Set(JSON.parse(localStorage.starred||'[]'))}catch{}
+const save=()=>{try{localStorage.done=JSON.stringify([...done]);localStorage.hidden=JSON.stringify([...hidden]);localStorage.starred=JSON.stringify([...starred])}catch{}};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function chips(el,items,get,set,star){
+  el.innerHTML=['',...items].map(v=>`<button class="chip" aria-pressed="${get()===v}" data-v="${esc(v)}">${star&&starred.has(v)?'★ ':''}${esc(LV[v]||v||'All')}</button>`).join('');
+  el.onclick=e=>{const b=e.target.closest('button');if(b){set(b.dataset.v);render()}};
+}
+function render(){
+  const V=P.filter(p=>!hidden.has(p.cat)),vdone=V.filter(p=>done.has(p.id)).length;
+  chips($('role'),Object.keys(ROLES),()=>role,v=>{role=v;cat=''});
+  chips($('lv'),Object.keys(LV),()=>lv,v=>lv=v);
+  chips($('cat'),[...new Set(V.filter(inRole).map(p=>p.cat))].sort((a,b)=>starred.has(b)-starred.has(a)||a.localeCompare(b)),()=>cat,v=>cat=v,true);
+  const q=$('q').value.toLowerCase();
+  const list=V.filter(p=>(!onlyStar||starred.has(p.cat))&&inRole(p)&&(!lv||p.lv==lv)&&(!cat||p.cat==cat)&&(p.title+p.desc+p.cat).toLowerCase().includes(q));
+  $('count').textContent=`${list.length} projects · ${vdone}/${V.length} completed`;
+  $('pb').style.width=(V.length?100*vdone/V.length:0)+'%';
+  $('delbar').innerHTML=(cat?`<button class="chip" id="star">${starred.has(cat)?'★ Unstar':'☆ Star'} topic “${esc(cat)}”</button>`:'')+(starred.size?`<button class="chip" id="onlystar" aria-pressed="${onlyStar}">★ Starred topics only (${starred.size})</button>`:'')+(cat?`<button class="chip danger" id="del">🗑 Delete topic “${esc(cat)}”</button>`:'')+(hidden.size?`<button class="chip" id="restore">Restore ${hidden.size} deleted topic${hidden.size>1?'s':''}</button>`:'');
+  $('grid').innerHTML=list.map(p=>`<div class="card${done.has(p.id)?' done':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
+<div class="tags"><span class="tag lv-${p.lv}">${LV[p.lv]}</span><span class="tag">${starred.has(p.cat)?'★ ':''}${esc(p.cat)}</span></div>
+<h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
+<div class="ft"><span>${p.n?p.n.toLocaleString()+' started':'New'}</span><label><input type="checkbox" data-id="${p.id}"${done.has(p.id)?' checked':''}> Done</label></div></div>`).join('');
+}
+$('grid').onchange=e=>{const id=+e.target.dataset.id;e.target.checked?done.add(id):done.delete(id);save();render()};
+// deleting a topic hides every project in that category (stored in this browser; restorable)
+$('delbar').onclick=e=>{
+  if(e.target.id=='star'){starred.has(cat)?starred.delete(cat):starred.add(cat);if(!starred.size)onlyStar=false;save();render();return}
+  if(e.target.id=='onlystar'){onlyStar=!onlyStar;render();return}
+  if(e.target.id=='restore'){
+    const names=[...hidden].sort().join(', ');
+    if(!confirm(`Restore ${hidden.size} deleted topic(s): ${names}?`))return;
+    if(!confirm(`Second confirmation: really restore ${names}?`))return;
+    hidden.clear();save();render();return;
+  }
+  if(e.target.id!='del')return;
+  const n=P.filter(p=>p.cat==cat).length;
+  if(!confirm(`Delete the topic "${cat}" and its ${n} projects?`))return;
+  if(!confirm(`Second confirmation: really delete "${cat}"? Your progress on its projects will no longer count. You can restore it later.`))return;
+  hidden.add(cat);starred.delete(cat);if(!starred.size)onlyStar=false;cat='';save();render();
+};
+const GENERIC={b:['Break the task into small steps and build the simplest version first','Handle bad or missing input without crashing','Write a short README explaining how to run it'],i:['Plan the data model or structure before coding','Cover the main features plus error cases','Add tests and a README with setup steps'],a:['Write a short design doc covering architecture and trade-offs','Implement the core features with tests','Add monitoring or documentation so someone else can run it']};
+function open_(id){
+  const p=P[id],ex=p.stretch||[],list=p.tasks||p.req||GENERIC[p.lv];
+  const code=e=>`<h4>${esc(e.title||'Example')}</h4><pre><code>${esc(e.code)}</code></pre>${e.output?`<h4>Expected output</h4><pre><code>${esc(e.output)}</code></pre>`:''}`;
+  $('dlg').innerHTML=`<div class="tags"><span class="tag lv-${p.lv}">${LV[p.lv]}</span><span class="tag">${esc(p.cat)}</span></div>
+<h2 id="dt">${esc(p.title)}</h2>${(p.overview||p.desc).split('\n\n').map(t=>`<p>${esc(t)}</p>`).join('')}
+<h4>${p.tasks?'Requirements':'What to implement'}</h4><ul>${list.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+${(p.examples||[]).map(code).join('')}
+${ex.length?`<h4>Stretch goals</h4><ul>${ex.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+${(p.notes||[]).map(x=>`<p class="note">${esc(x)}</p>`).join('')}
+<div class="row"><label><input type="checkbox" id="dd"${done.has(id)?' checked':''}> Mark as done</label><button class="chip" id="dc">Close</button></div>`;
+  $('dd').onchange=e=>{e.target.checked?done.add(id):done.delete(id);save();render()};
+  $('dc').onclick=()=>$('dlg').close();
+  $('dlg').showModal();
+}
+$('dlg').onclick=e=>{if(e.target==$('dlg'))$('dlg').close()};
+const openCard=e=>{const c=e.target.closest('.card');if(c&&!e.target.closest('label'))open_(+c.dataset.id)};
+$('grid').onclick=openCard;
+$('grid').onkeydown=e=>{if(e.key=='Enter'&&e.target.classList.contains('card'))openCard(e)};
+$('q').oninput=render;
+const load=d=>{P=d.map(o=>({id:o.id,lv:o.level[0],cat:o.category,title:o.title,desc:o.description,n:o.started,req:o.requirements,stretch:o.stretch,overview:o.overview,tasks:o.tasks,examples:o.examples,notes:o.notes}));render()};
+// fetch works over http; opening the file directly (file://) falls back to projects.js, a copy of projects.json
+fetch('projects.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(load).catch(()=>{
+  const sc=document.createElement('script');sc.src='projects.js';
+  sc.onload=()=>load(window.PROJECTS);
+  sc.onerror=()=>{$('count').textContent='Could not load projects.json or projects.js. Keep them next to index.html.'};
+  document.head.appendChild(sc);
+});
+</script>
+</body>
+</html>
