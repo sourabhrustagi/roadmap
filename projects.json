@@ -39158,5 +39158,79 @@
   "notes": [
    "Keep at least one copy off-site and offline."
   ]
+ },
+ {
+  "level": "beginner",
+  "title": "Write a Product Vision Statement",
+  "description": "Write a one-page vision for a small public product, stating who it helps and why, so the team agrees on direction.",
+  "overview": "A product manager defines the product vision and what success looks like. Write a one-page vision for a simple fintech product (for example a bill-reminder app) that names the user, the problem and a measurable goal.",
+  "tasks": [
+   "Name one user group and the money problem they face",
+   "Write the vision in two sentences and one success metric",
+   "Review it with a classmate and revise the wording"
+  ],
+  "notes": [
+   "Based on Atlassian: Product Manager role guide (atlassian.com/agile/product-management/product-manager)."
+  ],
+  "id": 1247,
+  "category": "Product Management",
+  "started": 0,
+  "stretch": []
+ },
+ {
+  "level": "intermediate",
+  "title": "Build a Prioritised Product Roadmap",
+  "description": "Turn a list of feature ideas for a public savings app into a quarterly roadmap ranked by user impact and effort.",
+  "overview": "A roadmap shows what you are building and why, linked to product goals. Score feature ideas for a savings app on customer value and effort, then place the top items on a quarterly roadmap that a non-technical reader can follow.",
+  "tasks": [
+   "List at least ten feature ideas and score each for user value and effort",
+   "Pick the top items that fit one quarter and link each to a goal",
+   "Draw the roadmap with the why next to each item"
+  ],
+  "notes": [
+   "Based on Atlassian: Product Roadmap Guide (atlassian.com/agile/product-management/product-roadmaps)."
+  ],
+  "id": 1248,
+  "category": "Product Management",
+  "started": 0,
+  "stretch": []
+ },
+ {
+  "level": "advanced",
+  "title": "Align Stakeholders on a Lending Product Roadmap",
+  "description": "Lead a roadmap review for a small lender with leadership, engineering and support, and update it from their feedback.",
+  "overview": "Product managers balance business, technology and user needs and align stakeholders behind a vision. Prepare separate roadmap views for executives, engineers and sales for a small lending product, run the review, and record the changes.",
+  "tasks": [
+   "Create three views: executive (by quarter), engineering (by sprint), sales (no hard dates)",
+   "Run a review and log every stakeholder objection",
+   "Update the roadmap weekly and keep a change log"
+  ],
+  "notes": [
+   "Based on Atlassian: Product Roadmap Guide (atlassian.com/agile/product-management/product-roadmaps).",
+   "Based on Atlassian: Product Manager role guide (atlassian.com/agile/product-management/product-manager)."
+  ],
+  "id": 1249,
+  "category": "Product Management",
+  "started": 0,
+  "stretch": []
+ },
+ {
+  "level": "expert",
+  "title": "Run Product Portfolio Strategy for a Fintech Company",
+  "description": "Set a multi-product roadmap for a fintech company that balances customer needs, compliance and business goals across teams.",
+  "overview": "At scale, the product manager acts like a CEO of the product, setting goals and trade-offs across several products. Design a portfolio roadmap for a fintech company with payments, lending and savings products, with ownership, dependencies and a review cadence.",
+  "tasks": [
+   "Map every product to a company goal and a customer need",
+   "Set trade-off rules for compliance work against new features",
+   "Publish a roadmap cadence and an owner for each product area"
+  ],
+  "notes": [
+   "Based on Atlassian: Product Manager role guide (atlassian.com/agile/product-management/product-manager).",
+   "Based on Atlassian: Product Roadmap Guide (atlassian.com/agile/product-management/product-roadmaps)."
+  ],
+  "id": 1250,
+  "category": "Product Management",
+  "started": 0,
+  "stretch": []
  }
 ]
