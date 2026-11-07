@@ -37,6 +37,10 @@ input[type=search]{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(
 button.chip{border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:4px 12px;border-radius:99px;cursor:pointer;font:inherit;font-size:14px}
 button.chip[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
 h2.cur{margin:8px 0 10px;font-size:20px}
+.notes{border:1px solid var(--bd);background:var(--card);border-radius:10px;padding:12px;margin:0 0 14px}
+.notes label{display:block;font-weight:600;margin-bottom:6px}
+.notes textarea{width:100%;min-height:90px;resize:vertical;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit;font-size:14px}
+.notes .ns{display:block;font-size:12px;color:var(--mut);margin-top:4px;min-height:1em}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .card{position:relative;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
 .card.done{opacity:.55}
@@ -69,6 +73,7 @@ dialog .row{display:flex;justify-content:space-between;align-items:center;margin
 <main>
 <div class="bar"><input type="search" id="q" placeholder="Search projects…" aria-label="Search projects"></div>
 <div class="bar" id="lv" role="group" aria-label="Level"></div>
+<section class="notes" id="notesBox" hidden><label for="nt">Notes for <span id="nname"></span></label><textarea id="nt" placeholder="Write your notes for this topic: what to learn, links, plans…"></textarea><span class="ns" id="ns" aria-live="polite"></span></section>
 <h2 class="cur" id="cur"></h2>
 <div class="grid" id="grid"></div>
 </main>
@@ -104,6 +109,15 @@ const ALL='',STARS='*';
 let lv='',cat=ALL,role='',onlyPStar=false;
 const ld=k=>{try{return new Set(JSON.parse(localStorage[k]||'[]'))}catch{return new Set()}};
 const done=ld('done'),hidden=ld('hidden'),hiddenP=ld('hiddenP'),starred=ld('starred'),pstar=ld('pstar');
+// per-topic notes: { topic name: text }, kept in this browser only
+let notes={};try{notes=JSON.parse(localStorage.topicNotes||'{}')}catch{}
+let noteCat=null;
+$('nt').oninput=e=>{
+  const v=e.target.value;
+  if(v.trim())notes[noteCat]=v;else delete notes[noteCat];
+  let ok=true;try{localStorage.topicNotes=JSON.stringify(notes)}catch{ok=false}
+  $('ns').textContent=ok?'Saved in this browser':'Could not save (browser storage is blocked)';
+};
 const save=()=>{try{for(const [k,v] of Object.entries({done,hidden,hiddenP,starred,pstar}))localStorage[k]=JSON.stringify([...v])}catch{}};
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -138,6 +152,10 @@ function render(){
   const q=$('q').value.toLowerCase();
   const list=R.filter(p=>(cat===ALL||(cat===STARS?starred.has(p.cat):p.cat===cat))&&(!lv||p.lv==lv)&&(!onlyPStar||pstar.has(p.id))&&(p.title+p.desc+p.cat).toLowerCase().includes(q));
   $('cur').textContent=`${cat===ALL?'All topics':cat===STARS?'Starred topics':cat} · ${list.length} project${list.length==1?'':'s'}`;
+  // notes for the selected topic (only when one topic is open)
+  const topicOpen=cat!==ALL&&cat!==STARS;
+  $('notesBox').hidden=!topicOpen;
+  if(topicOpen&&noteCat!==cat){noteCat=cat;$('nname').textContent=cat;$('nt').value=notes[cat]||'';$('ns').textContent=''}
   $('grid').innerHTML=list.map(p=>`<div class="card${done.has(p.id)?' done':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
 <button class="ib pd" data-pdel="${p.id}" aria-label="Delete ${esc(p.title)}" title="Delete project">🗑</button>
 <button class="ib ps${pstar.has(p.id)?' on':''}" data-pstar="${p.id}" aria-pressed="${pstar.has(p.id)}" aria-label="Star ${esc(p.title)}">${pstar.has(p.id)?'★':'☆'}</button>
