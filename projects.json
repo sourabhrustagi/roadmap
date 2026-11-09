@@ -17450,35 +17450,27 @@
   "id": 483,
   "level": "beginner",
   "category": "React Native",
-  "title": "Mobile Payments Hello App",
-  "description": "Build a simple mobile payments app with core components so people can pay a friend.",
+  "title": "Send Money to a Friend App",
+  "description": "Build a pay-a-friend screen with amount, recipient and a confirmation, so anyone can send money from their phone.",
   "started": 0,
   "requirements": [
    "Use core components",
    "Style with flexbox",
-   "Run on a device or simulator"
+   "Validate the amount before confirming"
   ],
   "stretch": [
-   "Add navigation"
+   "Add a recent recipients list"
   ],
-  "overview": "Build a simple mobile payments app with core components so people can pay a friend.",
+  "overview": "Build a pay-a-friend screen with amount, recipient and a confirmation, so anyone can send money from their phone.",
   "tasks": [
    "Create the project with npx create-expo-app.",
-   "Build a Hello component with a name prop that shows Hello, NAME! in a Text element.",
-   "Build a screen using View, Text, Image, TextInput, and Button with StyleSheet.create and flexbox centering.",
-   "Use useState so typing a name in the TextInput updates the greeting.",
-   "Run it with npx expo start on a simulator or the Expo Go app and add one Jest test for Hello."
-  ],
-  "examples": [
-   {
-    "title": "Sample test",
-    "lang": "js",
-    "code": "import { render, screen } from '@testing-library/react-native';\nimport Hello from './Hello';\ntest('shows greeting', () => {\n  render(<Hello name=\"Ava\" />);\n  expect(screen.getByText('Hello, Ava!')).toBeTruthy();\n});",
-    "output": "Tests:       1 passed, 1 total"
-   }
+   "Build a SendMoney screen with TextInput for recipient and amount, a Button, and StyleSheet.create with flexbox.",
+   "Use useState and block the Send button when the amount is empty, zero or above the balance.",
+   "Show a confirmation screen with a Text summary (to, amount, fee) before 'sending'.",
+   "Add one Jest test with @testing-library/react-native for the amount validation."
   ],
   "notes": [
-   "Install jest-expo and @testing-library/react-native for the test.",
+   "Use mock data or a sandbox API; never real card numbers.",
    "Take a screenshot of the running app for your README."
   ]
  },
@@ -17486,36 +17478,28 @@
   "id": 484,
   "level": "intermediate",
   "category": "React Native",
-  "title": "Mobile Expense Notes App",
-  "description": "Add navigation and local storage to an expense notes app so people track daily spending on their phone.",
+  "title": "Card Management App",
+  "description": "Build a card app where people view card details, freeze a lost card and see recent card transactions.",
   "started": 0,
   "requirements": [
-   "Add navigation",
-   "Store notes locally",
-   "Show a list and detail view"
+   "Navigation with a card screen and transactions screen",
+   "Persist freeze state locally",
+   "Mask the card number"
   ],
   "stretch": [
-   "Add search"
+   "Add a virtual card generator"
   ],
-  "overview": "Add navigation and local storage to an expense notes app so people track daily spending on their phone.",
+  "overview": "Build a card app where people view card details, freeze a lost card and see recent card transactions.",
   "tasks": [
-   "Set up React Navigation with a stack: NotesList and NoteDetail.",
-   "saveNotes(notes) writes JSON to AsyncStorage under the key notes; loadNotes() returns the parsed array or [] when nothing is saved.",
-   "NotesList shows notes with FlatList and an Add button that opens an editor screen.",
-   "Tapping a note opens NoteDetail, which can edit or delete it.",
-   "Load notes when the app starts and save after every change."
-  ],
-  "examples": [
-   {
-    "title": "Sample check",
-    "lang": "js",
-    "code": "console.log(await loadNotes());\nawait saveNotes([{ id: '1', title: 'A' }]);\nconsole.log(await loadNotes());",
-    "output": "[]\n[ { id: '1', title: 'A' } ]"
-   }
+   "Build a CardScreen showing a styled card with the number masked (•••• 1234) and a reveal-for-5-seconds toggle.",
+   "Add a Freeze card Switch and persist it with AsyncStorage (or expo-secure-store).",
+   "Build a Transactions FlatList with merchant, amount and category, with pull-to-refresh from a mock API.",
+   "Add spending limit controls (daily online limit) with input validation.",
+   "Handle loading, empty and error states, and test the freeze flow."
   ],
   "notes": [
-   "In tests use the AsyncStorage jest mock.",
-   "Use a string id such as the timestamp, not the array index."
+   "Use mock data or a sandbox API; never real card numbers.",
+   "Take a screenshot of the running app for your README."
   ]
  },
  {
@@ -17523,36 +17507,27 @@
   "level": "advanced",
   "category": "React Native",
   "title": "Offline-First Mobile Wallet",
-  "description": "Build a wallet app that works offline and syncs later, so people can see their balance without signal.",
+  "description": "Build a wallet app that shows balance and history offline and syncs safely later, so people can use it with poor signal.",
   "started": 0,
   "requirements": [
-   "Store data locally",
-   "Sync when online",
-   "Add push notifications and E2E tests"
+   "Persist balance and history locally",
+   "Queue payments while offline",
+   "Sync without double charging"
   ],
   "stretch": [
-   "Handle conflicts"
+   "Background sync"
   ],
-  "overview": "Build a wallet app that works offline and syncs later, so people can see their balance without signal.",
+  "overview": "Build a wallet app that shows balance and history offline and syncs safely later, so people can use it with poor signal.",
   "tasks": [
-   "Store data in SQLite or WatermelonDB, never only in memory.",
-   "enqueue(queue, change) adds a change to a persisted queue.",
-   "syncPending(queue, send) sends changes in order with the async function send(change), removes each one that succeeds, and stops at the first failure.",
-   "Detect connectivity with NetInfo and call syncPending when it becomes connected.",
-   "Register for push notifications with Expo Notifications and show a notification when sync finishes.",
-   "Write Detox or Maestro tests: create a note offline, go online, and see it sync."
-  ],
-  "examples": [
-   {
-    "title": "Sample check",
-    "lang": "js",
-    "code": "const queue = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];\nawait syncPending(queue, async c => { if (c.id === 'b') throw new Error('offline'); });\nconsole.log(queue.map(c => c.id));",
-    "output": "[ 'b', 'c' ]"
-   }
+   "Create the wallet with a balance and transaction list saved in SQLite or MMKV.",
+   "Detect connectivity with @react-native-community/netinfo and show an offline banner.",
+   "Queue send-money requests locally with a unique idempotency key per payment.",
+   "On reconnect, replay the queue to a mock API that rejects duplicate keys; show pending, sent and failed states.",
+   "Handle conflicts when the server balance differs from the local one, and test the sync with Jest."
   ],
   "notes": [
-   "Each change needs a unique id so the server can ignore duplicates.",
-   "Push tokens need a real device."
+   "Use mock data or a sandbox API; never real card numbers.",
+   "Take a screenshot of the running app for your README."
   ]
  },
  {
@@ -30789,7 +30764,7 @@
   "id": 865,
   "level": "expert",
   "category": "React Native",
-  "title": "Startup Speed for a Payments App",
+  "title": "Fast Startup for a Cards and Payments App",
   "description": "Cut cold start and jank in a payments app so people on older phones can pay quickly.",
   "started": 0,
   "overview": "Cut cold start and jank in a payments app so people on older phones can pay quickly.",
@@ -30865,7 +30840,7 @@
   "id": 867,
   "level": "expert",
   "category": "React Native",
-  "title": "Offline-Safe Field Payments Sync",
+  "title": "Offline-Safe Payments Sync",
   "description": "Design conflict-safe offline payment sync so field workers and customers never see double charges.",
   "started": 0,
   "overview": "Design conflict-safe offline payment sync so field workers and customers never see double charges.",
@@ -37257,49 +37232,85 @@
   "id": 1128,
   "level": "beginner",
   "category": "React Native",
-  "title": "Expense Notes in React Native",
-  "description": "Build an expense notes app with navigation so people log spending on the go.",
+  "title": "Bill Payment Reminder App",
+  "description": "Build an app that lists upcoming bills (rent, electricity, phone) with due dates, so people never pay late.",
   "started": 0,
-  "overview": "Build an expense notes app with navigation so people log spending on the go.",
+  "overview": "Build an app that lists upcoming bills (rent, electricity, phone) with due dates, so people never pay late.",
   "tasks": [
-   "Create two screens",
-   "Navigate between them",
-   "Save notes locally"
+   "Create an Expo project and install @react-navigation/native and a stack navigator.",
+   "Render a FlatList of bills (name, amount, due date) from a local array; colour overdue bills red.",
+   "Add a BillDetail screen with a 'Mark as paid' button that updates state.",
+   "Add an Add Bill form with validation for name, amount and a valid date.",
+   "Test the overdue logic with Jest."
   ],
-  "stretch": [],
-  "notes": []
+  "stretch": [
+   "Sort by due date"
+  ],
+  "notes": [
+   "Use mock data or a sandbox API; never real card numbers.",
+   "Take a screenshot of the running app for your README."
+  ],
+  "requirements": [
+   "Use FlatList for bills",
+   "Add React Navigation between list and detail",
+   "Mark a bill as paid"
+  ]
  },
  {
   "id": 1129,
   "level": "intermediate",
   "category": "React Native",
-  "title": "Banking App With Native Features",
-  "description": "Call a phone feature from a banking app with permissions so customers can verify who they are.",
+  "title": "QR Pay and Biometric Login App",
+  "description": "Build a QR-code payment app protected by fingerprint or face unlock, so customers can pay in shops safely.",
   "started": 0,
-  "overview": "Call a phone feature from a banking app with permissions so customers can verify who they are.",
+  "overview": "Build a QR-code payment app protected by fingerprint or face unlock, so customers can pay in shops safely.",
   "tasks": [
-   "Request permission",
-   "Read a device value",
-   "Show a fallback when denied"
+   "Add biometric unlock on app open with expo-local-authentication and a PIN fallback.",
+   "Request camera permission and scan a merchant QR code encoding payee and amount.",
+   "Show a payment confirmation with merchant name and amount; require biometric re-auth before paying.",
+   "Handle denied permissions with a clear explanation and a link to settings.",
+   "Store a session token in expo-secure-store, never AsyncStorage."
   ],
-  "stretch": [],
-  "notes": []
+  "stretch": [
+   "Generate your own receive-money QR"
+  ],
+  "notes": [
+   "Use mock data or a sandbox API; never real card numbers.",
+   "Take a screenshot of the running app for your README."
+  ],
+  "requirements": [
+   "Use expo-local-authentication",
+   "Use expo-camera or barcode scanner",
+   "Handle denied permissions"
+  ]
  },
  {
   "id": 1130,
   "level": "advanced",
   "category": "React Native",
-  "title": "Mobile Banking Release Pipeline",
-  "description": "Set up builds, updates and crash reports so customers get safe mobile banking releases.",
+  "title": "Bill Payment App With Release Pipeline",
+  "description": "Ship a bill payment app with push reminders, crash reporting and over-the-air updates, so users get safe releases.",
   "started": 0,
-  "overview": "Set up builds, updates and crash reports so customers get safe mobile banking releases.",
+  "overview": "Ship a bill payment app with push reminders, crash reporting and over-the-air updates, so users get safe releases.",
   "tasks": [
-   "Configure signed builds",
-   "Ship an update channel",
-   "Add crash reporting"
+   "Add expo-notifications to schedule a reminder before each bill's due date.",
+   "Integrate Sentry (or similar) for crash and error reporting with release tags.",
+   "Configure EAS Build for dev, staging and production profiles with separate API URLs.",
+   "Ship a fix via EAS Update to a staging channel, then promote to production.",
+   "Write a rollback runbook and verify it by rolling back an update."
   ],
-  "stretch": [],
-  "notes": []
+  "stretch": [
+   "Add a bill payment history export"
+  ],
+  "notes": [
+   "Use mock data or a sandbox API; never real card numbers.",
+   "Take a screenshot of the running app for your README."
+  ],
+  "requirements": [
+   "Push notification reminders for due bills",
+   "Crash reporting",
+   "EAS build and OTA update"
+  ]
  },
  {
   "id": 1131,
